@@ -8,6 +8,6 @@ class Post(models.Model):
     created_at = models.DateField(auto_now_add=True)
 
 class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, null=True, on_delete=models.CASCADE, related_name='comments')
     created_at = models.DateField(auto_now_add=True)
     comment = models.CharField()
