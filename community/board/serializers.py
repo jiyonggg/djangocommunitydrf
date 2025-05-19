@@ -12,13 +12,18 @@ class PostEditSerializer(serializers.ModelSerializer):
         model = Post
         fields = ['id', 'title', 'body', 'created_at']
 
-class CommentSerializer(serializers.ModelSerializer):
+class CommentWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['comment']
+
+class CommentViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['id', 'post', 'created_at', 'comment']
 
 class DetailPostSerializer(serializers.ModelSerializer):
-    comments = CommentSerializer(many=True, read_only=True)
+    comments = CommentViewSerializer(many=True, read_only=True)
     class Meta:
         model = Post
         fields = ['id', 'title', 'body', 'created_at', 'comments']

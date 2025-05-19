@@ -51,16 +51,17 @@ def detail_post(request, pk):
 @api_view(['GET', 'POST'])
 def all_comment(request, pk):
     if request.method == 'GET':
-        comments = Comment.objects.filter(post_exact=pk)
-        serializer = CommentSerializer(comments, many=True)
-        return Response(status=status.HTTP_200_OK)
+        comments = Comment.objects.filter(post__exact=pk)
+        serializer = CommentViewSerializer(comments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'POST':
         try:
-            serializer = CommentSerializer(data=request.data)
+            write_serializer = CommentWriteSerializer(data=request.data)
             target = Post.objects.get(pk=pk)
-            if serializer.is_valid():
-                serializer.save(post=target)
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            if write_serializer.is_valid():
+                comment = write_serializer.save(post=target)
+                view_serializer = CommentViewSerializer(comment)
+                return Response(view_serializer.data, status=status.HTTP_201_CREATED)
             return Response(status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
